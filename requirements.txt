@@ -2,3 +2,4 @@ aiogram==3.0.0b7
 telethon==1.30.0
 pymongo==4.6.1
 python-dotenv==1.0.0
+aiohttp==3.9.6
