@@ -1,17 +1,21 @@
 # db.py
-from pymongo import MongoClient
 import os
 from dotenv import load_dotenv
+from pymongo import MongoClient
+
 load_dotenv()
 
-client = MongoClient(os.getenv("MONGODB_URI"))
+MONGODB_URI = os.getenv("MONGODB_URI")
+client = MongoClient(MONGODB_URI)
 db = client.get_default_database()
 
-users_col = db["users"]            # stores user balances, linked tg id
-groups_col = db["groups"]          # stores group verifications & pricing
-withdraws_col = db["withdraws"]    # withdraw queue
-config_col = db["config"]          # admin-set prices, base config
+users_col = db["users"]            # { tg_id, balance, created_at }
+groups_col = db["groups"]          # { group_link, requested_by, year, price, status, created_at }
+withdraws_col = db["withdraws"]    # { tg_id, amount, address, status, created_at }
+config_col = db["config"]          # stores sessions & price configs
 
 def get_admins():
-    admins = os.getenv("ADMINS", "")
-    return [int(x) for x in admins.split(",") if x.strip()]
+    raw = os.getenv("ADMINS", "")
+    if not raw:
+        return []
+    return [int(x.strip()) for x in raw.split(",") if x.strip()]
